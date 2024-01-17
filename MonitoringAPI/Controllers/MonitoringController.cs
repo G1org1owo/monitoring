@@ -1,8 +1,4 @@
-﻿using System.Text.Json.Serialization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using System.Web;
-using MonitoringAPI.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace MonitoringAPI.Controllers
