@@ -26,7 +26,7 @@ namespace MonitoringAPI.Controllers
             }
 
             string outDirectory = string.Format("{0}/images/{1}/",
-                System.Reflection.Assembly.GetEntryAssembly().Location,
+                AppDomain.CurrentDomain.BaseDirectory,
                 Request.HttpContext.Connection.RemoteIpAddress
             );
             string outFile = string.Format("{0}-{1}-{2}_{3}-{4}-{5}.jpg",
@@ -40,7 +40,7 @@ namespace MonitoringAPI.Controllers
 
             Directory.CreateDirectory(outDirectory);
 
-            using (Stream stream = collection.Files[0].OpenReadStream())
+            using (Stream stream = collection.Files[1].OpenReadStream())
             {
                 using (FileStream fileStream = new FileStream(outDirectory + outFile, FileMode.OpenOrCreate, FileAccess.Write))
                 {
