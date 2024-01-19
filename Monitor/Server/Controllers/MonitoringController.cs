@@ -9,8 +9,15 @@ namespace MonitoringAPI.Controllers
     {
         public MonitoringController() { }
 
+        private readonly IWebHostEnvironment _env;
+
+        public MonitoringController(IWebHostEnvironment env)
+        {
+            _env = env;
+        }
+
         [HttpPost("image")]
-        public async Task<IActionResult> ReceiveImage([FromForm] IFormCollection collection)
+        public async Task<IActionResult> UploadImage([FromForm] IFormCollection collection)
         {
             DateTime time;
 
@@ -25,14 +32,14 @@ namespace MonitoringAPI.Controllers
                 }
             }
 
-            string outDirectory = string.Format("{0}/images/{1}/",
-                AppDomain.CurrentDomain.BaseDirectory,
-                Request.HttpContext.Connection.RemoteIpAddress
-            );
-            string outFile = string.Format("{0}-{1}-{2}_{3}-{4}-{5}.jpg",
+            string outDirectory = string.Format("{0}/images/{1}/{2}-{3}-{4}/",
+                _env.WebRootPath,
+                Request.HttpContext.Connection.RemoteIpAddress,
                 time.Year,
                 time.Month,
-                time.Day,
+                time.Day
+            );
+            string outFile = string.Format("{0}-{1}-{2}.jpg",
                 time.Hour,
                 time.Minute,
                 time.Second
