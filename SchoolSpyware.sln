@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolLibrary", "Monitored\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolSpywareApp", "Monitored\SchoolSpywareApp\SchoolSpywareApp.csproj", "{6EE136D4-D03E-4840-8C49-E823E4B1F0E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitoringAPI", "Monitor\MonitoringAPI\MonitoringAPI.csproj", "{89686616-A312-449D-AA33-E0F24CEBC1EC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonitorServer", "Monitor\Server\MonitorServer.csproj", "{89686616-A312-449D-AA33-E0F24CEBC1EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
