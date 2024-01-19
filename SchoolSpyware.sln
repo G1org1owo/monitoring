@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolLibrary", "SchoolLibrary\SchoolLibrary.csproj", "{3B4AD2D6-42B7-4818-9D6B-70DABE0B36A2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolLibrary", "Monitored\SchoolLibrary\SchoolLibrary.csproj", "{3B4AD2D6-42B7-4818-9D6B-70DABE0B36A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolSpywareApp", "SchoolSpywareApp\SchoolSpywareApp.csproj", "{6EE136D4-D03E-4840-8C49-E823E4B1F0E1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolSpywareApp", "Monitored\SchoolSpywareApp\SchoolSpywareApp.csproj", "{6EE136D4-D03E-4840-8C49-E823E4B1F0E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitoringAPI", "MonitoringAPI\MonitoringAPI.csproj", "{89686616-A312-449D-AA33-E0F24CEBC1EC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonitoringAPI", "Monitor\MonitoringAPI\MonitoringAPI.csproj", "{89686616-A312-449D-AA33-E0F24CEBC1EC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
