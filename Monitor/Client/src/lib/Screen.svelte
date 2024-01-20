@@ -1,5 +1,6 @@
 <script>
     import { createImage } from "./stores";
+    import { createEventDispatcher } from 'svelte';
     export let src;
     export let target;
 
@@ -10,10 +11,14 @@
     }
 
     const image = createImage(src, target);
+
+    $: if($image.error && $image.info === "Connection Lost") {
+        notifyConnectionLost();
+    }
 </script>
 
 <div class=image-container>
-    {#if $image.imageUrl}
+    {#if !$image.error}
         <img src={$image.imageUrl} alt="Loading...">
         <p class=timestamp>{$image.timestamp}</p>
     {:else}

@@ -7,7 +7,7 @@
 
 <main>
   {#if enabled}
-    <Screen
+    <Screen on:connectionLost={() => console.log("connection lost")}
       src="http://127.0.0.1"
       target={ipAddress}>
     

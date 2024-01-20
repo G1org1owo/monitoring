@@ -8,7 +8,7 @@ import { getLatestImage } from './apiClient';
  * @param {string} targetAddress
  */
 export function createImage(serverAddress, targetAddress) {
-    return readable({imageUrl:"", timestamp:""}, function start(set) {
+    return readable({error: true, info: "Not initialized", imageUrl: "", timestamp: ""}, function start(set) {
         const interval = setInterval(() => {
             getLatestImage(serverAddress, targetAddress)
                 .then(image => set(image))

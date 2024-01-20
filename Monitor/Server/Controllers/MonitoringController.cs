@@ -70,11 +70,17 @@ namespace MonitoringAPI.Controllers
         {
             try
             {
+                if ((DateTime.Now - images[ipAddress].timestamp).TotalSeconds > 60 * 2)
+                {
+                    images.Remove(ipAddress);
+                    return Ok(JsonConvert.SerializeObject(new { error=true, info="Connection Lost" }));
+                }
+
                 return Ok(JsonConvert.SerializeObject(images[ipAddress]));
             }
             catch (KeyNotFoundException e)
             {
-                return BadRequest(e.Message);
+                return BadRequest(JsonConvert.SerializeObject(new { error=true, info=e.Message }));
             }
         }
     }
