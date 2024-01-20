@@ -65,7 +65,7 @@ namespace MonitoringAPI.Controllers
             return NoContent();
         }
 
-        [HttpGet("latestImage")]
+        [HttpGet("image")]
         public IActionResult GetLatestImage([FromQuery] string ipAddress)
         {
             try

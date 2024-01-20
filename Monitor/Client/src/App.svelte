@@ -7,7 +7,11 @@
 
 <main>
   {#if enabled}
-    <Screen src='http://127.0.0.1/api/latestImage?ipAddress={ipAddress}' ></Screen>
+    <Screen
+      src="http://127.0.0.1"
+      target={ipAddress}>
+    
+    </Screen>
   {/if}
 </main>
 

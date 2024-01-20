@@ -1,8 +1,15 @@
 <script>
     import { createImage } from "./stores";
     export let src;
+    export let target;
 
-    const image = createImage(src);
+    const dispatch = createEventDispatcher();
+
+    function notifyConnectionLost() {
+        dispatch("connectionLost", {});
+    }
+
+    const image = createImage(src, target);
 </script>
 
 <div class=image-container>
