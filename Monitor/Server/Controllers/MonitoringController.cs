@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Net;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace MonitoringAPI.Controllers
@@ -7,7 +8,7 @@ namespace MonitoringAPI.Controllers
     [ApiController]
     public class MonitoringController : ControllerBase
     {
-        public MonitoringController() { }
+        private static Dictionary<string, string> images = new Dictionary<string, string>();
 
         private readonly IWebHostEnvironment _env;
 
@@ -32,9 +33,11 @@ namespace MonitoringAPI.Controllers
                 }
             }
 
-            string outDirectory = string.Format("{0}/images/{1}/{2}-{3}-{4}/",
-                _env.WebRootPath,
-                Request.HttpContext.Connection.RemoteIpAddress,
+            IPAddress? hostIp = Request.HttpContext.Connection.RemoteIpAddress;
+            string basePath = _env.WebRootPath;
+
+            string outDirectory = string.Format("/images/{0}/{1}-{2}-{3}/",
+                hostIp,
                 time.Year,
                 time.Month,
                 time.Day
@@ -45,17 +48,26 @@ namespace MonitoringAPI.Controllers
                 time.Second
             );
 
-            Directory.CreateDirectory(outDirectory);
+            Directory.CreateDirectory(basePath + outDirectory);
 
             using (Stream stream = collection.Files[1].OpenReadStream())
             {
-                using (FileStream fileStream = new FileStream(outDirectory + outFile, FileMode.OpenOrCreate, FileAccess.Write))
+                using (FileStream fileStream = new FileStream(basePath + outDirectory + outFile, FileMode.OpenOrCreate,
+                           FileAccess.Write))
                 {
                     stream.CopyTo(fileStream);
                 }
             }
 
+            images[hostIp + ""] = outDirectory + outFile;
+
             return NoContent();
+        }
+
+        [HttpGet("latestImage")]
+        public IActionResult GetLatestImage([FromQuery] string ipAddress)
+        {
+            return Ok(JsonConvert.SerializeObject(new { url = images[ipAddress] }));
         }
     }
 }
