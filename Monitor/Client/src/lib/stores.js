@@ -1,5 +1,5 @@
 import { readable } from 'svelte/store';
-import { getLatestImageUrl } from './apiClient';
+import { getLatestImage } from './apiClient';
 
 
 
@@ -7,10 +7,10 @@ import { getLatestImageUrl } from './apiClient';
  * @param {string} address
  */
 export function createImage(address) {
-    return readable(null, function start(set) {
+    return readable({imageUrl:"", timestamp:""}, function start(set) {
         const interval = setInterval(() => {
-            getLatestImageUrl(address)
-                .then(url => set(url))
+            getLatestImage(address)
+                .then(image => set(image))
         }, 1000);
 
 

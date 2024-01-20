@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Mvc;
+using MonitorServer.Models;
 using Newtonsoft.Json;
 
 namespace MonitoringAPI.Controllers
@@ -8,7 +9,7 @@ namespace MonitoringAPI.Controllers
     [ApiController]
     public class MonitoringController : ControllerBase
     {
-        private static Dictionary<string, string> images = new Dictionary<string, string>();
+        private static Dictionary<string, Screenshot> images = new Dictionary<string, Screenshot>();
 
         private readonly IWebHostEnvironment _env;
 
@@ -59,7 +60,7 @@ namespace MonitoringAPI.Controllers
                 }
             }
 
-            images[hostIp + ""] = outDirectory + outFile;
+            images[hostIp + ""] = new Screenshot(outDirectory + outFile, time);
 
             return NoContent();
         }
@@ -67,7 +68,14 @@ namespace MonitoringAPI.Controllers
         [HttpGet("latestImage")]
         public IActionResult GetLatestImage([FromQuery] string ipAddress)
         {
-            return Ok(JsonConvert.SerializeObject(new { url = images[ipAddress] }));
+            try
+            {
+                return Ok(JsonConvert.SerializeObject(images[ipAddress]));
+            }
+            catch (KeyNotFoundException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

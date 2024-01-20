@@ -5,7 +5,10 @@
     const image = createImage(src);
 </script>
 
-<img src={$image} alt="Loading...">
+<div class=image-container>
+    <img src={$image.imageUrl} alt="Loading...">
+    <p class=timestamp>{$image.timestamp}</p>
+</div>
 
 <style>
     img {
