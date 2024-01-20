@@ -9,7 +9,7 @@ namespace MonitoringAPI.Controllers
     [ApiController]
     public class MonitoringController : ControllerBase
     {
-        private static Dictionary<string, Screenshot> images = new Dictionary<string, Screenshot>();
+        private static Dictionary<string, Screenshot> clients = new Dictionary<string, Screenshot>();
 
         private readonly IWebHostEnvironment _env;
 
@@ -60,7 +60,7 @@ namespace MonitoringAPI.Controllers
                 }
             }
 
-            images[hostIp + ""] = new Screenshot(outDirectory + outFile, time);
+            clients[hostIp + ""] = new Screenshot(outDirectory + outFile, time);
 
             return NoContent();
         }
@@ -70,18 +70,24 @@ namespace MonitoringAPI.Controllers
         {
             try
             {
-                if ((DateTime.Now - images[ipAddress].timestamp).TotalSeconds > 60 * 2)
+                if ((DateTime.Now - clients[ipAddress].timestamp).TotalSeconds > 60 * 2)
                 {
-                    images.Remove(ipAddress);
+                    clients.Remove(ipAddress);
                     return Ok(JsonConvert.SerializeObject(new { error=true, info="Connection Lost" }));
                 }
 
-                return Ok(JsonConvert.SerializeObject(images[ipAddress]));
+                return Ok(JsonConvert.SerializeObject(clients[ipAddress]));
             }
             catch (KeyNotFoundException e)
             {
                 return BadRequest(JsonConvert.SerializeObject(new { error=true, info=e.Message }));
             }
+        }
+
+        [HttpGet("clients")]
+        public IActionResult GetConnectedClients()
+        {
+            return Ok(JsonConvert.SerializeObject(clients.Keys));
         }
     }
 }

@@ -1,21 +1,20 @@
 <script lang="ts">
   import Screen from "./lib/Screen.svelte";
+  import { createClientsStore } from "./lib/stores";
 
-  let enabled = true;
-  let ipAddress = '127.0.0.1';
+  const serverUrl = "http://127.0.0.1";
+  const clients = createClientsStore("")
 </script>
 
 <main>
-  {#if enabled}
+  {#each $clients as client}
     <Screen on:connectionLost={() => console.log("connection lost")}
-      src="http://127.0.0.1"
-      target={ipAddress}>
+      src={serverUrl}
+      target={client}>
     
     </Screen>
-  {/if}
+  {/each}
 </main>
-
-<button on:click={() => enabled = !enabled}>Update screen</button>
 
 <style>
 </style>

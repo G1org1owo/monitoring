@@ -1,5 +1,5 @@
 import { readable } from 'svelte/store';
-import { getLatestImage } from './apiClient';
+import { getLatestImage, getConnectedClients } from './apiClient';
 
 
 
@@ -14,9 +14,24 @@ export function createImage(serverAddress, targetAddress) {
                 .then(image => set(image))
         }, 1000);
 
-
         return function stop() {
             clearInterval(interval);
         }
     });
+}
+
+/**
+ * @param {string} serverAddress
+ */
+export function createClientsStore(serverAddress) {
+    return readable([], function start(set) {
+        const interval = setInterval(() => {
+            getConnectedClients(serverAddress)
+                .then(clients => set(clients))
+        }, 5000);
+
+        return function stop() {
+            clearInterval(interval);
+        }
+    })
 }
