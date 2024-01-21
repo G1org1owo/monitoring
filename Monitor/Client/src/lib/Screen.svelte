@@ -3,6 +3,7 @@
     import { createEventDispatcher } from 'svelte';
     export let src;
     export let target;
+    export let size;
 
     const dispatch = createEventDispatcher();
 
@@ -12,15 +13,18 @@
 
     const image = createImage(src, target);
 
+    let hidden = true;
+
     $: if($image.error && $image.info === "Connection Lost") {
         notifyConnectionLost();
     }
 </script>
 
-<div class=image-container>
+<!-- svelte-ignore a11y-no-static-element-interactions -->
+<div class=image-container style="width: {size*16}px; height: {size*9}px" on:mouseenter={() => hidden = false} on:mouseleave={() => hidden = true}>
     {#if !$image.error}
         <img src={$image.imageUrl} alt="Loading...">
-        <p class=timestamp>{$image.timestamp}</p>
+        <p hidden={hidden} class=timestamp style="font-size: {size/2}px">{new Date($image.timestamp).toUTCString()}</p>
     {:else}
         <p class=alt-text>Loading...</p>
     {/if}
@@ -28,9 +32,10 @@
 
 <style>
     .image-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         position: relative;
-        width: 480px;
-        height: 272px;
         text-align: center;
         border-radius: 10px;
         background-color: black;
@@ -40,29 +45,24 @@
         position: absolute;
         left: 0;
         top: 0;
-        width: 480px;
-        height: 272px;
-        line-height: 200px;
+        width: 100%;
+        height: 100%;
+        border-radius: 10px;
         text-align: center;
     }
 
     .timestamp {
         position: absolute;
-        right: 10px;
-        bottom: 5px;
-        border-radius: 5px;
+        right: 2%;
+        bottom: 2%;
+        border-radius: 5%;
         background: #1a1a1a8f;
+        margin: 0;
     }
 
     .alt-text {
-        position: absolute;
-        width: 100px;
-        height:25px;
-        top: 50%;
-        left: 50%;
         text-align: center;
-        line-height: 25px;
-        margin: -12.5px 0 0 -50px;
+        margin: 0;
         padding: 0;
     }
 </style>
