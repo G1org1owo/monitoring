@@ -23,7 +23,7 @@
 </script>
 
 <div class=container>
-{#each $clients as client}
+{#each $clients as client (client)}
     <Screen on:connectionLost={() => console.log("connection lost")}
         target={client} {size}
     >
