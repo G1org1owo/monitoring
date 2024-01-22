@@ -1,7 +1,6 @@
 <script>
     import Screen from "./Screen.svelte";
     import { createClientsStore } from "./stores";
-    export let src;
     
     let size = 30;
 
@@ -18,7 +17,7 @@
         }
     }
 
-    const clients = createClientsStore("")
+    const clients = createClientsStore()
 
     $: size = getSizeFor($clients.length);
 </script>
@@ -26,7 +25,7 @@
 <div class=container>
 {#each $clients as client}
     <Screen on:connectionLost={() => console.log("connection lost")}
-        {src} target={client} {size}
+        target={client} {size}
     >
 
     </Screen>

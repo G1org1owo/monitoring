@@ -4,13 +4,12 @@ import { getLatestImage, getConnectedClients } from './apiClient';
 
 
 /**
- * @param {string} serverAddress
  * @param {string} targetAddress
  */
-export function createImage(serverAddress, targetAddress) {
+export function createImage(targetAddress) {
     return readable({error: true, info: "Not initialized", imageUrl: "", timestamp: ""}, function start(set) {
         const interval = setInterval(() => {
-            getLatestImage(serverAddress, targetAddress)
+            getLatestImage(targetAddress)
                 .then(image => set(image))
         }, 1000);
 
@@ -20,15 +19,12 @@ export function createImage(serverAddress, targetAddress) {
     });
 }
 
-/**
- * @param {string} serverAddress
- */
-export function createClientsStore(serverAddress) {
+export function createClientsStore() {
     return readable([], function start(set) {
         const interval = setInterval(() => {
-            getConnectedClients(serverAddress)
-                .then(clients => set(clients))
-        }, 5000);
+            getConnectedClients()
+                .then(clients => set(clients));
+    }, 5000);
 
         return function stop() {
             clearInterval(interval);

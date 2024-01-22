@@ -6,13 +6,16 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
 
 // Add services to the container.
 
+UriBuilder uri = new UriBuilder(args[0]);
+uri.Scheme = "http";
+
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-//builder.Services.AddEndpointsApiExplorer();
-//builder.Services.AddSwaggerGen();
+builder.WebHost.UseUrls(uri.ToString(), "http://127.0.0.1:80");
+
 
 var app = builder.Build();
 
+app.UseDefaultFiles();
 app.UseStaticFiles();
 
 app.UseAuthorization();

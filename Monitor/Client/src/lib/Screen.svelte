@@ -1,7 +1,6 @@
 <script>
     import { createImage } from "./stores";
     import { createEventDispatcher } from 'svelte';
-    export let src;
     export let target;
     export let size;
 
@@ -11,7 +10,7 @@
         dispatch("connectionLost", {});
     }
 
-    const image = createImage(src, target);
+    const image = createImage(target);
 
     let hidden = true;
 
