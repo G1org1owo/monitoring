@@ -20,7 +20,7 @@
 </script>
 
 <!-- svelte-ignore a11y-no-static-element-interactions -->
-<div class=image-container style="width: {size*16}px; height: {size*9}px" on:mouseenter={() => hidden = false} on:mouseleave={() => hidden = true}>
+<div class=image-container style="width: {size}vw; height: {size}vh" on:mouseenter={() => hidden = false} on:mouseleave={() => hidden = true}>
     {#if !$image.error}
         <img src={$image.imageUrl} alt="Loading...">
         <p hidden={hidden} class=timestamp style="font-size: {size/2}px">{new Date($image.timestamp).toUTCString()}</p>

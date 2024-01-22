@@ -9,11 +9,23 @@
      */
     function getSizeFor(nClients) {        
         if(nClients <= 1) {
-            return 100;
+            return 90;
         }
 
         if(nClients <= 4) {
-            return 50;
+            return 45;
+        }
+
+        if(nClients <= 9) {
+            return 30;
+        }
+
+        if(nClients <= 16) {
+            return 22.5;
+        }
+
+        if(nClients <= 25) {
+            return 18;
         }
     }
 
@@ -36,8 +48,10 @@
     .container {
         display:flex;
         flex-wrap: wrap;
-        grid-gap: 10px;
-        align-items: center;
+        gap: 2vmin 2vmin;
+        align-content: center;
         justify-content: center;
+        width: 100%;
+        height: 100%;
     }
 </style>
