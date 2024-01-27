@@ -51,9 +51,9 @@ namespace MonitoringAPI.Controllers
 
             Directory.CreateDirectory(basePath + outDirectory);
 
-            using (Stream stream = collection.Files[1].OpenReadStream())
+            await using (Stream stream = collection.Files[1].OpenReadStream())
             {
-                using (FileStream fileStream = new FileStream(basePath + outDirectory + outFile, FileMode.OpenOrCreate,
+                await using (FileStream fileStream = new FileStream(basePath + outDirectory + outFile, FileMode.OpenOrCreate,
                            FileAccess.Write))
                 {
                     stream.CopyTo(fileStream);
@@ -66,28 +66,31 @@ namespace MonitoringAPI.Controllers
         }
 
         [HttpGet("image")]
-        public IActionResult GetLatestImage([FromQuery] string ipAddress)
+        public async Task<IActionResult> GetLatestImage([FromQuery] string ipAddress)
         {
+            return await Task.Run(() =>
+            {
             try
             {
                 if ((DateTime.Now - clients[ipAddress].timestamp).TotalSeconds > 60 * 2)
                 {
                     clients.Remove(ipAddress);
-                    return Ok(JsonConvert.SerializeObject(new { error=true, info="Connection Lost" }));
+                        return Ok(JsonConvert.SerializeObject(new { error = true, info = "Connection Lost" }));
                 }
 
-                return Ok(JsonConvert.SerializeObject(clients[ipAddress]));
+                    return (IActionResult) Ok(JsonConvert.SerializeObject(clients[ipAddress]));
             }
             catch (KeyNotFoundException e)
             {
-                return BadRequest(JsonConvert.SerializeObject(new { error=true, info=e.Message }));
+                    return BadRequest(JsonConvert.SerializeObject(new { error = true, info = e.Message }));
             }
+            });
         }
 
         [HttpGet("clients")]
-        public IActionResult GetConnectedClients()
+        public async Task<IActionResult> GetConnectedClients()
         {
-            return Ok(JsonConvert.SerializeObject(clients.Keys));
+            return await Task.Run(() => Ok(JsonConvert.SerializeObject(clients.Keys)));
         }
     }
 }
