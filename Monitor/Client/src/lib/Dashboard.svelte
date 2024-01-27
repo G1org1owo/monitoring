@@ -51,7 +51,7 @@
         gap: 2vmin 2vmin;
         align-content: center;
         justify-content: center;
-        width: 100%;
-        height: 100%;
+        width: 90%;
+        height: 90%;
     }
 </style>
