@@ -72,20 +72,20 @@ namespace MonitoringAPI.Controllers
         {
             return await Task.Run(() =>
             {
-            try
-            {
-                if ((DateTime.Now - clients[ipAddress].timestamp).TotalSeconds > 60 * 2)
+                try
                 {
-                    clients.Remove(ipAddress);
+                    if ((DateTime.Now - clients[ipAddress].timestamp).TotalSeconds > 60 * 2)
+                    {
+                        clients.Remove(ipAddress);
                         return Ok(JsonConvert.SerializeObject(new { error = true, info = "Connection Lost" }));
-                }
+                    }
 
                     return (IActionResult) Ok(JsonConvert.SerializeObject(clients[ipAddress]));
-            }
-            catch (KeyNotFoundException e)
-            {
+                }
+                catch (KeyNotFoundException e)
+                {
                     return BadRequest(JsonConvert.SerializeObject(new { error = true, info = e.Message }));
-            }
+                }
             });
         }
 
@@ -95,11 +95,63 @@ namespace MonitoringAPI.Controllers
             return await Task.Run(() => Ok(JsonConvert.SerializeObject(clients.Keys)));
         }
 
+        [HttpGet("video_tree")]
+        public async Task<IActionResult> GetVideoTree()
+        {
+            return await Task.Run(() => Ok(JsonConvert.SerializeObject(
+                GetDirectoryTree(_env.WebRootPath + "/images/", _env.WebRootPath),
+                Formatting.Indented)
+            ));
+        }
+
         [HttpGet("~/video/{directory}")]
         public async Task<IActionResult> GetVideo(string directory)
         {
             directory = HttpUtility.UrlDecode(directory);
             return File(await VideoLib.ConvertToVideo(_env.WebRootPath + directory), "video/mp4");
+        }
+
+        private object GetDirectoryTree(string path, string parent)
+        {
+            string formatFileName(string path, string parent)
+            {
+                string fileName = Path.GetRelativePath(parent, path)
+                    .Replace(@"\", "/");
+
+                if (fileName.Equals("."))
+                {
+                    fileName = "/";
+                }
+
+                if (!fileName.StartsWith('/'))
+                {
+                    fileName = '/' + fileName;
+                }
+
+                return fileName;
+            }
+
+            if (System.IO.File.GetAttributes(path).HasFlag(FileAttributes.Directory))
+            {
+                List<object> children = new List<object>();
+                foreach (string file in Directory.EnumerateFileSystemEntries(path))
+                {
+                    children.Add(GetDirectoryTree(file, parent));
+                }
+                
+                return new
+                {
+                    name = formatFileName(path, parent),
+                    type = "directory",
+                    children = children
+                };
+            }
+
+            return new
+            {
+                name = formatFileName(path, parent),
+                type = "file"
+            };
         }
     }
 }
