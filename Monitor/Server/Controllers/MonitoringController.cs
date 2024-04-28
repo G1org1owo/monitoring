@@ -11,13 +11,13 @@ namespace MonitoringAPI.Controllers
     [ApiController]
     public class MonitoringController : ControllerBase
     {
-        private static Dictionary<string, Screenshot> clients = new Dictionary<string, Screenshot>();
-
         private readonly IWebHostEnvironment _env;
+        private readonly ScreenshotContext _context;
 
-        public MonitoringController(IWebHostEnvironment env)
+        public MonitoringController(IWebHostEnvironment env, ScreenshotContext context)
         {
             _env = env;
+            _context = context;
         }
 
         [HttpPost("image")]
@@ -63,25 +63,40 @@ namespace MonitoringAPI.Controllers
                 }
             }
 
-            clients[username] = new Screenshot(outDirectory + outFile, time);
+            Screenshot? screenshot = await _context.Screenshots!.FindAsync(username);
 
+            if (screenshot == null)
+            {
+                screenshot = new Screenshot(outDirectory + outFile, time, username);
+                _context.Screenshots!.Add(screenshot);
+            }
+            else
+            {
+                screenshot.imageUrl = outDirectory + outFile;
+                screenshot.timestamp = time;
+                _context.Screenshots!.Update(screenshot);
+            }
+
+            await _context.SaveChangesAsync();
             return NoContent();
         }
 
         [HttpGet("image")]
         public async Task<IActionResult> GetLatestImage([FromQuery] string username)
         {
-            return await Task.Run(() =>
+            return await Task.Run(async () =>
             {
                 try
                 {
-                    if ((DateTime.Now - clients[username].timestamp).TotalSeconds > 60 * 2)
+                    Screenshot? screenshot = await _context.Screenshots!.FindAsync(username);
+                    if ((DateTime.Now - screenshot!.timestamp).TotalSeconds > 60 * 2)
                     {
-                        clients.Remove(username);
+                        _context.Remove(screenshot);
+                        await _context.SaveChangesAsync();
                         return Ok(JsonConvert.SerializeObject(new { error = true, info = "Connection Lost" }));
                     }
 
-                    return (IActionResult) Ok(JsonConvert.SerializeObject(clients[username]));
+                    return (IActionResult) Ok(JsonConvert.SerializeObject(screenshot));
                 }
                 catch (KeyNotFoundException e)
                 {
@@ -93,7 +108,8 @@ namespace MonitoringAPI.Controllers
         [HttpGet("clients")]
         public async Task<IActionResult> GetConnectedClients()
         {
-            return await Task.Run(() => Ok(JsonConvert.SerializeObject(clients.Keys)));
+            List<string> clients = _context.Screenshots!.Select(screenshot => screenshot.username).ToList();
+            return await Task.Run(() => Ok(JsonConvert.SerializeObject(clients)));
         }
 
         [HttpGet("video_tree")]

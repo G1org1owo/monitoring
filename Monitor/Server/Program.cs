@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Rewrite;
+using Microsoft.EntityFrameworkCore;
+using MonitorServer.Models;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
 {
@@ -12,6 +14,8 @@ UriBuilder uri = new UriBuilder(args[0]);
 uri.Scheme = "http";
 
 builder.Services.AddControllers();
+builder.Services.AddDbContext<ScreenshotContext>(opt => 
+    opt.UseInMemoryDatabase("screenshots"));
 builder.WebHost.UseUrls(uri.ToString(), "http://127.0.0.1:80");
 
 
