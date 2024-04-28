@@ -4,12 +4,12 @@ import { getLatestImage, getConnectedClients } from './apiClient';
 
 
 /**
- * @param {string} targetAddress
+ * @param {string} targetUsername
  */
-export function createImage(targetAddress) {
+export function createImage(targetUsername) {
     return readable({error: true, info: "Not initialized", imageUrl: "", timestamp: ""}, function start(set) {
         const interval = setInterval(() => {
-            getLatestImage(targetAddress)
+            getLatestImage(targetUsername)
                 .then(image => set(image))
         }, 1000);
 

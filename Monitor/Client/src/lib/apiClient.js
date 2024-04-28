@@ -1,8 +1,8 @@
 /**
- * @param {string} ipAddress
+ * @param {string} username
  */
-export async function getLatestImage(ipAddress) {
-    let url ="/api/image?ipAddress=" + ipAddress;
+export async function getLatestImage(username) {
+    let url ="/api/image?username=" + username;
 
     return fetch(url)
         .then(response => response.json(), error => error)
