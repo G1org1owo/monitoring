@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
-using System.Drawing.Imaging;
 using System.Windows.Forms;
+using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
 namespace SchoolLibrary
 {
@@ -8,15 +8,17 @@ namespace SchoolLibrary
     {
         public static Bitmap CaptureScreen()
         {
-            Rectangle bounds = Screen.AllScreens[0].Bounds;
+            Rectangle screenBounds = Screen.AllScreens[0].Bounds;
+            Rectangle imageBounds = new Rectangle(0, 0, 1920, 1080);
 
-            Bitmap bitmap = new Bitmap(bounds.Width, bounds.Height, PixelFormat.Format32bppArgb);
+            Bitmap bitmap = new Bitmap(screenBounds.Width, screenBounds.Height, PixelFormat.Format32bppArgb);
             Graphics g = Graphics.FromImage(bitmap);
 
-            g.CopyFromScreen(bounds.Left, bounds.Top, 0, 0, bounds.Size);
+            g.CopyFromScreen(screenBounds.Left, screenBounds.Top, 0, 0, screenBounds.Size);
             g.Dispose();
             
-            return bitmap;
+            // Resize to 1920x1080 to account for different screen resolutions and aspect ratios
+            return new Bitmap(bitmap, imageBounds.Width, imageBounds.Height);
         }
     }
 }
