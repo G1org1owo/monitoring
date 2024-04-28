@@ -1,7 +1,9 @@
 ﻿using System.Net;
+using System.Web;
 using Microsoft.AspNetCore.Mvc;
 using MonitorServer.Models;
 using Newtonsoft.Json;
+using SchoolLibrary;
 
 namespace MonitoringAPI.Controllers
 {
@@ -91,6 +93,13 @@ namespace MonitoringAPI.Controllers
         public async Task<IActionResult> GetConnectedClients()
         {
             return await Task.Run(() => Ok(JsonConvert.SerializeObject(clients.Keys)));
+        }
+
+        [HttpGet("~/video/{directory}")]
+        public async Task<IActionResult> GetVideo(string directory)
+        {
+            directory = HttpUtility.UrlDecode(directory);
+            return File(await VideoLib.ConvertToVideo(_env.WebRootPath + directory), "video/mp4");
         }
     }
 }
