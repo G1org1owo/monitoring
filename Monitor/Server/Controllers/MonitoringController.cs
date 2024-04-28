@@ -39,13 +39,13 @@ namespace MonitoringAPI.Controllers
             IPAddress? hostIp = Request.HttpContext.Connection.RemoteIpAddress;
             string basePath = _env.WebRootPath;
 
-            string outDirectory = string.Format("/images/{0}/{1}-{2}-{3}/",
-                hostIp,
+            string outDirectory = string.Format("/images/{0:D4}-{1:D2}-{2:D2}/{3}/",
                 time.Year,
                 time.Month,
-                time.Day
+                time.Day,
+                hostIp
             );
-            string outFile = string.Format("{0}-{1}-{2}.jpg",
+            string outFile = string.Format("{0:D2}-{1:D2}-{2:D2}.jpg",
                 time.Hour,
                 time.Minute,
                 time.Second
