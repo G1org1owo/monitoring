@@ -24,6 +24,7 @@ namespace MonitoringAPI.Controllers
         public async Task<IActionResult> UploadImage([FromForm] IFormCollection collection)
         {
             DateTime time;
+            string username;
 
             using (Stream stream = collection.Files[0].OpenReadStream())
             {
@@ -33,17 +34,17 @@ namespace MonitoringAPI.Controllers
                     Dictionary<string, string> info = JsonConvert.DeserializeObject<Dictionary<string, string>>(json)!;
 
                     time = DateTime.Parse(info["time"]);
+                    username = info["username"];
                 }
             }
-
-            IPAddress? hostIp = Request.HttpContext.Connection.RemoteIpAddress;
+            
             string basePath = _env.WebRootPath;
 
             string outDirectory = string.Format("/images/{0:D4}-{1:D2}-{2:D2}/{3}/",
                 time.Year,
                 time.Month,
                 time.Day,
-                hostIp
+                username
             );
             string outFile = string.Format("{0:D2}-{1:D2}-{2:D2}.jpg",
                 time.Hour,
@@ -62,25 +63,25 @@ namespace MonitoringAPI.Controllers
                 }
             }
 
-            clients[hostIp + ""] = new Screenshot(outDirectory + outFile, time);
+            clients[username] = new Screenshot(outDirectory + outFile, time);
 
             return NoContent();
         }
 
         [HttpGet("image")]
-        public async Task<IActionResult> GetLatestImage([FromQuery] string ipAddress)
+        public async Task<IActionResult> GetLatestImage([FromQuery] string username)
         {
             return await Task.Run(() =>
             {
                 try
                 {
-                    if ((DateTime.Now - clients[ipAddress].timestamp).TotalSeconds > 60 * 2)
+                    if ((DateTime.Now - clients[username].timestamp).TotalSeconds > 60 * 2)
                     {
-                        clients.Remove(ipAddress);
+                        clients.Remove(username);
                         return Ok(JsonConvert.SerializeObject(new { error = true, info = "Connection Lost" }));
                     }
 
-                    return (IActionResult) Ok(JsonConvert.SerializeObject(clients[ipAddress]));
+                    return (IActionResult) Ok(JsonConvert.SerializeObject(clients[username]));
                 }
                 catch (KeyNotFoundException e)
                 {
