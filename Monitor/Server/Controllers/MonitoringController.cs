@@ -86,22 +86,19 @@ namespace MonitoringAPI.Controllers
         {
             return await Task.Run(async () =>
             {
-                try
-                {
-                    Screenshot? screenshot = await _context.Screenshots!.FindAsync(username);
-                    if ((DateTime.Now - screenshot!.timestamp).TotalSeconds > 60 * 2)
-                    {
-                        _context.Remove(screenshot);
-                        await _context.SaveChangesAsync();
-                        return Ok(JsonConvert.SerializeObject(new { error = true, info = "Connection Lost" }));
-                    }
-
-                    return (IActionResult) Ok(JsonConvert.SerializeObject(screenshot));
-                }
-                catch (KeyNotFoundException e)
+                Screenshot? screenshot = await _context.Screenshots!.FindAsync(username);
+                if (screenshot == null)
                 {
                     return BadRequest(JsonConvert.SerializeObject(new { error = true, info = e.Message }));
                 }
+                if((DateTime.Now - screenshot.timestamp).TotalSeconds > 60 * 2)
+                {
+                    _context.Remove(screenshot);
+                    await _context.SaveChangesAsync();
+                    return Ok(JsonConvert.SerializeObject(new { error = true, info = "Connection Lost" }));
+                }
+
+                return (IActionResult) Ok(JsonConvert.SerializeObject(screenshot));
             });
         }
 
