@@ -89,7 +89,7 @@ namespace MonitoringAPI.Controllers
                 Screenshot? screenshot = await _context.Screenshots!.FindAsync(username);
                 if (screenshot == null)
                 {
-                    return BadRequest(JsonConvert.SerializeObject(new { error = true, info = e.Message }));
+                    return BadRequest(JsonConvert.SerializeObject(new { error = true, info = $"User {username} not found" }));
                 }
                 if((DateTime.Now - screenshot.timestamp).TotalSeconds > 60 * 2)
                 {
