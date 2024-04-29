@@ -1,13 +1,14 @@
-﻿using System.Net;
-using System.Web;
+﻿using System.Web;
 using Microsoft.AspNetCore.Mvc;
+using MonitorServer.Middleware;
 using MonitorServer.Models;
 using Newtonsoft.Json;
 using SchoolLibrary;
 
-namespace MonitoringAPI.Controllers
+namespace MonitorServer.Controllers
 {
     [Route("api")]
+    [MiddlewareFilter<MonitorMiddlewarePipeline>]
     [ApiController]
     public class MonitoringController : ControllerBase
     {
