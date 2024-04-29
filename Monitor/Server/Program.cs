@@ -6,7 +6,8 @@ Task runRequestEndpoint()
 {
     var requestEndpointBuilder = WebApplication.CreateBuilder(new WebApplicationOptions()
     {
-        Args = args
+        Args = args,
+        WebRootPath = "../Client/dist/"
     });
 
     // Add services to the container.
