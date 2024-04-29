@@ -78,5 +78,12 @@ namespace MonitorServer.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+
+        [HttpGet("rsakey")]
+        public async Task<IActionResult> GetPublicKey()
+        {
+            Console.WriteLine(RSAContext.GetPublicKeyPem());
+            return await Task.Run(() => Ok(RSAContext.GetPublicKeyPem()));
+        }
     }
 }

