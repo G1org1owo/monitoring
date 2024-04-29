@@ -2,34 +2,58 @@ using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
 using MonitorServer.Models;
 
-var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
+Task runRequestEndpoint()
 {
-    Args = args,
-    WebRootPath = "../Client/dist/"
-});
+    var requestEndpointBuilder = WebApplication.CreateBuilder(new WebApplicationOptions()
+    {
+        Args = args
+    });
 
-// Add services to the container.
+    // Add services to the container.
 
-UriBuilder uri = new UriBuilder(args[0]);
-uri.Scheme = "http";
+    UriBuilder uri = new UriBuilder(args[0])
+    {
+        Scheme = "http"
+    };
 
-builder.Services.AddControllers();
-builder.Services.AddDbContext<ScreenshotContext>(opt => 
-    opt.UseInMemoryDatabase("screenshots"));
-builder.WebHost.UseUrls(uri.ToString(), "http://127.0.0.1:80");
+    requestEndpointBuilder.Services.AddControllers();
+    requestEndpointBuilder.Services.AddDbContext<ScreenshotContext>(opt =>
+        opt.UseInMemoryDatabase("screenshots"));
+    requestEndpointBuilder.WebHost.UseUrls(uri.ToString());
 
+    var requestEndpointApp = requestEndpointBuilder.Build();
 
-var app = builder.Build();
+    requestEndpointApp.UseAuthorization();
+    requestEndpointApp.MapControllers();
 
-app.UseRewriter(new RewriteOptions()
-    .AddRewrite("^save_videos", "/save_videos.html", true)
-);
+    return requestEndpointApp.RunAsync();
+}
+Task runClientEndpoint()
+{
+    var clientBuilder = WebApplication.CreateBuilder(new WebApplicationOptions()
+    {
+        WebRootPath = "../Client/dist/"
+    });
 
-app.UseDefaultFiles();
-app.UseStaticFiles();
+    clientBuilder.Services.AddControllers();
+    clientBuilder.Services.AddDbContext<ScreenshotContext>(opt =>
+        opt.UseInMemoryDatabase("screenshots"));
+    clientBuilder.WebHost.UseUrls("http://127.0.0.1:80");
 
-app.UseAuthorization();
+    var clientApp = clientBuilder.Build();
 
-app.MapControllers();
+    clientApp.UseRewriter(new RewriteOptions()
+        .AddRewrite("^save_videos", "/save_videos.html", true)
+    );
 
-app.Run();
+    clientApp.UseDefaultFiles();
+    clientApp.UseStaticFiles();
+
+    clientApp.UseAuthorization();
+    clientApp.MapControllers();
+
+    return clientApp.RunAsync();
+}
+
+Task[] tasks = { runRequestEndpoint(), runClientEndpoint() };
+await Task.WhenAll(tasks);
