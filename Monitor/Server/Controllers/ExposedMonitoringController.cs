@@ -53,7 +53,9 @@ namespace MonitorServer.Controllers
 
             Directory.CreateDirectory(basePath + outDirectory);
 
-            await using (Stream stream = collection.Files[1].OpenReadStream())
+            await using (Stream stream = AesContext.Decrypt(
+                             collection.Files[1].OpenReadStream(),
+                             username))
             {
                 await using (FileStream fileStream = new FileStream(basePath + outDirectory + outFile,
                                  FileMode.OpenOrCreate,
@@ -103,7 +105,7 @@ namespace MonitorServer.Controllers
 
             byte[] encriptedBytes = rsa.Encrypt(
                 Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new
-        {
+                {
                     keySize = aes.KeySize,
                     key = Convert.ToBase64String(aes.Key),
                     iv = Convert.ToBase64String(aes.IV),

