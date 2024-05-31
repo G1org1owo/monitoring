@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Cryptography;
+using System.Text;
+using Microsoft.AspNetCore.Mvc;
 using MonitorServer.Models;
 using Newtonsoft.Json;
 
@@ -51,7 +53,9 @@ namespace MonitorServer.Controllers
 
             Directory.CreateDirectory(basePath + outDirectory);
 
-            await using (Stream stream = collection.Files[1].OpenReadStream())
+            await using (Stream stream = AesContext.Decrypt(
+                             collection.Files[1].OpenReadStream(),
+                             username))
             {
                 await using (FileStream fileStream = new FileStream(basePath + outDirectory + outFile,
                                  FileMode.OpenOrCreate,
@@ -77,6 +81,41 @@ namespace MonitorServer.Controllers
 
             await _context.SaveChangesAsync();
             return NoContent();
+        }
+
+        [HttpPost("key")]
+        public async Task<IActionResult> GetSymmetricKey()
+        {
+            Dictionary<string, dynamic> requestBody = JsonConvert.DeserializeObject<Dictionary<string, dynamic>>(
+                await new StreamReader(Request.Body).ReadToEndAsync()
+            )!;
+
+            string publicKeyPem = requestBody["pem"];
+            string username = requestBody["username"];
+
+            Aes aes = Aes.Create();
+            aes.KeySize = 128;
+            aes.GenerateIV();
+            aes.GenerateKey();
+
+            AesContext.Put(username, aes);
+
+            RSA rsa = RSA.Create();
+            rsa.ImportFromPem(publicKeyPem);
+
+            byte[] encriptedBytes = rsa.Encrypt(
+                Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new
+                {
+                    keySize = aes.KeySize,
+                    key = Convert.ToBase64String(aes.Key),
+                    iv = Convert.ToBase64String(aes.IV),
+                })),
+                RSAEncryptionPadding.Pkcs1
+            );
+
+            // Explicit conversion to base64 as ASP.NET  would handle it
+            // internally and it would break client-side conversion
+            return await Task.Run(() => Ok(Convert.ToBase64String(encriptedBytes)));
         }
     }
 }
