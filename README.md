@@ -1,4 +1,4 @@
-# SchoolSpyware
+# Monitoring
 
 This is a mock app that illustrates a way to capture the screen of a user and remotely monitor it, employing techniques such as asymmetric-key encryption to ensure privacy and safety
 
