@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34031.279
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolLibrary", "Monitored\SchoolLibrary\SchoolLibrary.csproj", "{3B4AD2D6-42B7-4818-9D6B-70DABE0B36A2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonitoringLibrary", "Monitored\MonitoringLibrary\MonitoringLibrary.csproj", "{3B4AD2D6-42B7-4818-9D6B-70DABE0B36A2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchoolSpywareApp", "Monitored\SchoolSpywareApp\SchoolSpywareApp.csproj", "{6EE136D4-D03E-4840-8C49-E823E4B1F0E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonitoredApp", "Monitored\MonitoredApp\MonitoredApp.csproj", "{6EE136D4-D03E-4840-8C49-E823E4B1F0E1}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonitorServer", "Monitor\Server\MonitorServer.csproj", "{89686616-A312-449D-AA33-E0F24CEBC1EC}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -15,21 +15,35 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
 		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{3B4AD2D6-42B7-4818-9D6B-70DABE0B36A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3B4AD2D6-42B7-4818-9D6B-70DABE0B36A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B4AD2D6-42B7-4818-9D6B-70DABE0B36A2}.Debug|x64.ActiveCfg = Debug|x64
+		{3B4AD2D6-42B7-4818-9D6B-70DABE0B36A2}.Debug|x64.Build.0 = Debug|x64
 		{3B4AD2D6-42B7-4818-9D6B-70DABE0B36A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3B4AD2D6-42B7-4818-9D6B-70DABE0B36A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B4AD2D6-42B7-4818-9D6B-70DABE0B36A2}.Release|x64.ActiveCfg = Release|x64
+		{3B4AD2D6-42B7-4818-9D6B-70DABE0B36A2}.Release|x64.Build.0 = Release|x64
 		{6EE136D4-D03E-4840-8C49-E823E4B1F0E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6EE136D4-D03E-4840-8C49-E823E4B1F0E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EE136D4-D03E-4840-8C49-E823E4B1F0E1}.Debug|x64.ActiveCfg = Debug|x64
+		{6EE136D4-D03E-4840-8C49-E823E4B1F0E1}.Debug|x64.Build.0 = Debug|x64
 		{6EE136D4-D03E-4840-8C49-E823E4B1F0E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6EE136D4-D03E-4840-8C49-E823E4B1F0E1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6EE136D4-D03E-4840-8C49-E823E4B1F0E1}.Release|x64.ActiveCfg = Release|x64
+		{6EE136D4-D03E-4840-8C49-E823E4B1F0E1}.Release|x64.Build.0 = Release|x64
 		{89686616-A312-449D-AA33-E0F24CEBC1EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{89686616-A312-449D-AA33-E0F24CEBC1EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{89686616-A312-449D-AA33-E0F24CEBC1EC}.Debug|x64.ActiveCfg = Debug|x64
+		{89686616-A312-449D-AA33-E0F24CEBC1EC}.Debug|x64.Build.0 = Debug|x64
 		{89686616-A312-449D-AA33-E0F24CEBC1EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{89686616-A312-449D-AA33-E0F24CEBC1EC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{89686616-A312-449D-AA33-E0F24CEBC1EC}.Release|x64.ActiveCfg = Release|x64
+		{89686616-A312-449D-AA33-E0F24CEBC1EC}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
